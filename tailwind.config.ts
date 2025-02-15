@@ -19,6 +19,11 @@ export default {
         lightGrey: '#FAFAFA',
         red: '#FF3939',
       },
+      fontWeight: {
+        normal: "400",
+        semibold: "600",
+        bold: "700",
+      },
     },
   },
   plugins: [],
