@@ -3,7 +3,7 @@ import AuthHeader from "@/app/components/auth/AuthHeader"
 
 const page = () => {
   return (
-    <div className="flex flex-col gap-[64px]">
+    <div className="flex flex-col gap-[64px] md:items-center">
       <AuthHeader />
       <AuthForm type="register" />
     </div>

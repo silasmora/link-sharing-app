@@ -6,8 +6,8 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
   const isLogin = type === 'login';
 
   return (
-    <div>
-      <form action="" className="flex flex-col gap-10">
+    <div className="md:flex md:justify-center md:items-center">
+      <form action="" className="flex flex-col gap-10 md:w-[476px] md:bg-white md:p-10 md:rounded-lg">
         <div className="flex flex-col gap-2">
           <h1 className="text-[24px] font-bold leading-9">{isLogin? "Login" : "Create account"}</h1>
           <p className="text-darkGrey leading-6 ">{isLogin? "Add your details below to get back into the app" : "Let’s get you started sharing your links!"}</p>
@@ -44,7 +44,7 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
             </div>
           )}
           <Button type="submit">{isLogin? 'Login' : 'Create new account'}</Button>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center md:flex-row md:justify-center gap-1">
             <p className="leading-6 text-darkGrey">{isLogin? "Don’t have an account?" : "Already have an account?"}</p>
             <Link href={isLogin? "/auth/register" : "/auth/login"} className="text-purple">
               {isLogin? "Create account" : "Login"}
