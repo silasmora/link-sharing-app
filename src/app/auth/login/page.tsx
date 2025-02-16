@@ -1,12 +1,9 @@
 import AuthForm from "@/app/components/auth/AuthForm"
 import AuthHeader from "@/app/components/auth/AuthHeader"
 
-
-type Props = {}
-
-const page = (props: Props) => {
+const page = () => {
   return (
-    <div className="p-8 flex flex-col gap-[64px]">
+    <div className="flex flex-col gap-[64px]">
      <AuthHeader />
      <AuthForm type="login" />
     </div>

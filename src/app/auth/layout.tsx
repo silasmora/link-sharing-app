@@ -2,7 +2,7 @@
 
 const Authlayout = ({ children }: {children: React.ReactNode}) => {
   return (
-    <div>
+    <div className="p-8">
       {children}
     </div>
   )
