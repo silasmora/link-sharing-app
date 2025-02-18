@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ type = "button", onClick, children, cla
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`bg-purple text-white font-semiBold py-3 px-6 rounded-lg ${className}`}>
+      className={`bg-purple text-white font-semiBold py-3 px-6 rounded-lg hover:bg-purpleHover duration-300 ease-in-out hover:shadow-[0px_0px_32px_0px_rgba(99,60,255,0.25)]  ${className}`}>
       {children}
     </button>
   )
