@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
+import SessionProviderWrapper from "./components/SessionProviderWrapper";
 
 const instrumentSans = Instrument_Sans({
   variable: "--font-instrument-sans",
@@ -20,12 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${instrumentSans.variable} box-border m-0 p-0`}
-      >
+    <SessionProviderWrapper>
+      <html lang="en">
+        <body
+          className={`${instrumentSans.variable} box-border m-0 p-0`}
+        >
         {children}
-      </body>
-    </html>
+        </body>
+      </html>
+   </SessionProviderWrapper> 
   );
 }
