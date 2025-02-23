@@ -15,8 +15,9 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
     confirmPassword: ''
   })
   console.log(formData)
-  const [error, setError] = useState<string | null>(null)
-  console.log(error)           
+  // state to  store error messages dynimically
+  const [error, setError] = useState<{ email?: string, password?: string, confirmPassword?: string}>({})
+  console.log(error)          
   const [loading, setLoading] = useState(false)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -24,31 +25,37 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
       [e.target.name]: e.target.value
     })
 
+    // Clear error message when user starts typing
     if (error) {
-      setError("")
+      setError((prev) => ({ ...prev, [e.target.name]: null}) )
     }
   }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
+    setError({})
 
-    if (!formData.email || !formData.password) {
-      setError("Please fill in all fields")
-      setLoading(false)
-      return
-    }
+    //Put the new error messages in a new object
+    let newErrors: { email?: string, password?: string, confirmPassword?: string} = {}
+
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.password) newErrors.password = "Password is required";
+    if (!isLogin && !formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
 
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match")
-      setLoading(false)
-      return
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     if (!isLogin && formData.password.length < 8) {
-      setError("Password must be at least 8 characters")
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    // Check to see if there are any errors in the newErrors object
+    if (Object.keys(newErrors).length > 0) {
+      setError(newErrors) 
+      setLoading(false)
       return
-    }  
+    }
     // try {
     //   const res = await fetch("/api/auth/signup", {
     //     method: "POST",
@@ -94,11 +101,11 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
                 value={formData.email}
                 onChange={handleChange}
                 className={`placeholder:text-[#333333]/50 w-full border rounded-lg pl-11 py-3 mt-1 leading-6 focus:outline-none focus:border-purple focus:shadow-[0px_0px_32px_0px_rgba(99,60,255,0.25)]
-                ${error ? 'border-red' : 'border-grey '}`} />
+                ${error?.email ? 'border-red' : 'border-grey '}`} />
               <svg className="absolute left-4 top-[55%] transform -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M14 3H2C1.86739 3 1.74021 3.05268 1.64645 3.14645C1.55268 3.24021 1.5 3.36739 1.5 3.5V12C1.5 12.2652 1.60536 12.5196 1.79289 12.7071C1.98043 12.8946 2.23478 13 2.5 13H13.5C13.7652 13 14.0196 12.8946 14.2071 12.7071C14.3946 12.5196 14.5 12.2652 14.5 12V3.5C14.5 3.36739 14.4473 3.24021 14.3536 3.14645C14.2598 3.05268 14.1326 3 14 3ZM13.5 12H2.5V4.63688L7.66187 9.36875C7.75412 9.45343 7.87478 9.50041 8 9.50041C8.12522 9.50041 8.24588 9.45343 8.33813 9.36875L13.5 4.63688V12Z" fill="#737373"/>
               </svg>
-              {error && <p className="text-red text-[12px] leading-[18px] absolute right-4 top-[55%] transform -translate-y-1/2">{error}</p>}
+              {error?.email && <p className="text-red text-[12px] leading-[18px] absolute right-4 top-[55%] transform -translate-y-1/2">{error.email}</p>}
             </div>
           </div>
           <div>
@@ -108,30 +115,30 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
                 type="password" 
                 name="password" 
                 id="password" 
-                placeholder={isLogin? 'Enter your password' : 'At least .8 characters'}
+                // placeholder={isLogin? 'Enter your password' : 'At least .8 characters'}
                 value={formData.password}
                 onChange={handleChange} 
                 className={`placeholder:text-[#333333]/50 w-full border rounded-lg pl-11 py-3 mt-1 leading-6 focus:outline-none focus:border-purple focus:shadow-[0px_0px_32px_0px_rgba(99,60,255,0.25)]
-                ${error ? "border-red" : "border-grey"}`} />
+                ${error?.password ? "border-red" : "border-grey"}`} />
               <svg className="absolute left-4 top-[55%] transform -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16"><path fill="#737373" d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/></svg>
-              {error && <p className="text-red text-[12px] leading-[18px] absolute right-4 top-[55%] transform -translate-y-1/2">{error}</p>}
+              {error?.password && <p className="text-red text-[12px] leading-[18px] absolute right-4 top-[55%] transform -translate-y-1/2">{error.password}</p>}
             </div>
           </div>
           {!isLogin && (
             <div>
-              <label htmlFor="email" className="block text-[#333333] text-[12px] leading-[18px]">{isLogin? 'password' : 'Create password'}</label>
+              <label htmlFor="email" className="block text-[#333333] text-[12px] leading-[18px]">{isLogin? 'password' : 'Confirm password'}</label>
               <div className="relative">
                 <input 
                   type="password" 
                   name="confirmPassword" 
                   id="confirmPassword" 
-                  placeholder='At least .8 characters'
+                  // placeholder='At least .8 characters'
                   value={formData.confirmPassword}
                   onChange={handleChange} 
                   className={`placeholder:text-[#333333]/50 w-full border rounded-lg pl-11 py-3 mt-1 leading-6 focus:outline-none focus:border-purple focus:shadow-[0px_0px_32px_0px_rgba(99,60,255,0.25)]
-                    ${error ? "border-red" : "border-grey"}`} />
+                    ${error?.confirmPassword ? "border-red" : "border-grey"}`} />
                 <svg className="absolute left-4 top-[55%] transform -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16"><path fill="#737373" d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/></svg>
-                {error && <p className="text-red text-[12px] leading-[18px] absolute right-4 top-[55%] transform -translate-y-1/2">{error}</p>}
+                {error?.confirmPassword && <p className="text-red text-[12px] leading-[18px] absolute right-4 top-[55%] transform -translate-y-1/2">{error.confirmPassword}</p>}
               </div>
             </div>
           )}
