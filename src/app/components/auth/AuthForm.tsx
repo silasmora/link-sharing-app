@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function AuthForm({ type }: { type: 'login' | 'register' }) {
+export default function AuthForm({ type }: { type: 'login' | 'signup' }) {
 
   const isLogin = type === 'login';
   const router = useRouter()
@@ -14,10 +14,8 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
     password: '',
     confirmPassword: ''
   })
-  console.log(formData)
   // state to  store error messages dynimically
-  const [error, setError] = useState<{ email?: string, password?: string, confirmPassword?: string}>({})
-  console.log(error)          
+  const [error, setError] = useState<{ email?: string, password?: string, confirmPassword?: string}>({})  
   const [loading, setLoading] = useState(false)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -38,7 +36,13 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
     //Put the new error messages in a new object
     let newErrors: { email?: string, password?: string, confirmPassword?: string} = {}
 
-    if (!formData.email) newErrors.email = "Email is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Wrong or invalid email address";
+    }
     if (!formData.password) newErrors.password = "Password is required";
     if (!isLogin && !formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
 
@@ -56,33 +60,34 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
       setLoading(false)
       return
     }
-    // try {
-    //   const res = await fetch("/api/auth/signup", {
-    //     method: "POST",
-    //     headers: {"Content-Type": "application/json" },
-    //     body: JSON.stringify(formData)
-    //   })
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      })
+      console.log(res)
+      const data = await res.json()
+      console.log("Response data: ", data)
+      if (!res.ok) {
+        throw new Error(data.error)
+      }
 
-    //   const data = await res.json()
-      
-    //   if (!res.ok) {
-    //     throw new Error(data.error || "Something went wrong")
-    //   }
+      alert("Signup successful! Redirecting...")
+      router.push("/auth/login") // Redirect to login page
 
-    //   alert("Signup successful! Redirecting...")
-    //   router.push("/login") // Redirect to login page
-
-    // } catch (err: any) {
-    //   setError(err.message)
-    // } finally {
-    //   setLoading(false)
-    // }
-    console.log("Form submitted:", formData)
+    } catch (err: any) {
+      setError(err.message)
+      console.log("Error: ", err)
+    } finally {
+      setLoading(false)
+    }
     }
   
   return (
     <div className="md:flex md:justify-center md:items-center">
       <form
+        noValidate
         onSubmit={handleSubmit}
         className="flex flex-col gap-10 md:w-[476px] md:bg-white md:p-10 md:rounded-lg">
         <div className="flex flex-col gap-2">
@@ -154,7 +159,7 @@ export default function AuthForm({ type }: { type: 'login' | 'register' }) {
             </Button>
           <div className="flex flex-col items-center md:flex-row md:justify-center gap-1">
             <p className="leading-6 text-darkGrey">{isLogin? "Don’t have an account?" : "Already have an account?"}</p>
-            <Link href={isLogin? "/auth/register" : "/auth/login"} className="text-purple">
+            <Link href={isLogin? "/auth/signup" : "/auth/login"} className="text-purple">
               {isLogin? "Create account" : "Login"}
             </Link>
           </div>

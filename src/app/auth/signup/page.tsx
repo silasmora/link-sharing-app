@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div className="flex flex-col gap-[64px] md:items-center">
       <AuthHeader />
-      <AuthForm type="register" />
+      <AuthForm type="signup" />
     </div>
   )
 }
