@@ -4,6 +4,8 @@ import Button from "../Button";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { json } from "stream/consumers";
 
 export default function AuthForm({ type }: { type: 'login' | 'signup' }) {
 
@@ -61,20 +63,37 @@ export default function AuthForm({ type }: { type: 'login' | 'signup' }) {
       return
     }
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {"Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      })
-      console.log(res)
-      const data = await res.json()
-      console.log("Response data: ", data)
-      if (!res.ok) {
-        throw new Error(data.error)
-      }
+      if (isLogin) {
+        // Handle login
+        const result = await signIn("credentials", {
+          redirect: false,
+          email: formData.email,
+          password: formData.password
+        })
 
-      alert("Signup successful! Redirecting...")
-      router.push("/auth/login") // Redirect to login page
+        if (result?.error) {
+          setError({ email: result.error });
+        } else {
+          router.push("/dashboard")
+        }
+        
+      } else {
+        // Handle sign up
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: {"Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        })
+      
+        const data = await res.json()
+        console.log("Response data: ", data)
+        if (!res.ok) {
+          throw new Error(data.error)
+        }
+  
+        alert("Signup successful! Redirecting...")
+        router.push("/auth/login") // Redirect to login page
+      }
 
     } catch (err: any) {
       setError(err.message)

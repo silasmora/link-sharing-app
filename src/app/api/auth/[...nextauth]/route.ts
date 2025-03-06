@@ -35,7 +35,10 @@ const handler = NextAuth({
           throw new Error('Invalid email or password');
         }
 
-        return user
+        return { 
+          id: user.id, 
+          email: user.email
+        }
       } 
     })
   ],
