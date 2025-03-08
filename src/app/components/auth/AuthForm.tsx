@@ -70,9 +70,9 @@ export default function AuthForm({ type }: { type: 'login' | 'signup' }) {
           email: formData.email,
           password: formData.password
         })
-
+        console.log(result?.error)
         if (result?.error) {
-          setError({ email: result.error });
+          setError({ password: 'Wrong password. Try again' });
         } else {
           router.push("/dashboard")
         }
