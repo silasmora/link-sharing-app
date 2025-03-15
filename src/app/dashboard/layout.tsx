@@ -1,8 +1,12 @@
+import TopBar from "../components/dashboard/TopBar"
 
 
 const dashboardLayout = ({ children } : {children: React.ReactNode}) => {
   return (
-    <div>{children}</div>
+    <div className="bg-lightGrey h-screen">
+      <TopBar />
+      {children}
+      </div>
   )
 }
 

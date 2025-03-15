@@ -24,15 +24,15 @@ const handler = NextAuth({
         const user = await prisma.user.findUnique({
           where: { email: credentials.email }
         })
-
+        // Check it user exist in database
         if (!user) {
-          throw new Error('Invalid email or password');
+          throw new Error("Couldn't find your account");
         }
 
         // Check if password is correct
         const isValid = await bcrypt.compare(credentials.password, user.password)
         if (!isValid) {
-          throw new Error('Invalid email or password');
+          throw new Error('Wrong password, try again');
         }
 
         return { 

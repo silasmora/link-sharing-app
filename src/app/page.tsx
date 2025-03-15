@@ -5,6 +5,7 @@ export default function Home() {
 
   const isAuthenticated = false;
 
+
   if (isAuthenticated) {
     redirect('/dashboard');
   } else {
