@@ -1,9 +1,8 @@
 "use client"
 
-import { useSession, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import Button from "../components/Button"
 
 
 const page = () => {
@@ -20,7 +19,7 @@ const page = () => {
   
   return (
     <div className='flex justify-center items-center'>
-      <Button onClick={() => signOut()}>Sign out</Button>
+      
     </div>
   )
 }
