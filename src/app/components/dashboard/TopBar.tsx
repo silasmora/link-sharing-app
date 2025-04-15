@@ -1,15 +1,16 @@
 "use client"
 
-import React, { useState } from 'react'
+import React from 'react'
 import Navlink from './Navlink'
 import { signOut } from 'next-auth/react'
 import { FiLogOut } from 'react-icons/fi'
 
-type Props = {}
+type Props = {
+  activeTab: string
+  setActiveTab: (tab: string) => void
+}
 
-const TopBar = (props: Props) => {
-
-  const [activeTab, setActiveTab] = useState('Links')
+const TopBar = ({ activeTab, setActiveTab }: Props) => {
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab)
@@ -40,8 +41,8 @@ const TopBar = (props: Props) => {
             onClick={() => handleTabClick("Links")}/>
           <Navlink 
             label="Profile Details" 
-            isActive={activeTab === "profile"} 
-            onClick={() => handleTabClick("profile")}/>
+            isActive={activeTab === "Profile"} 
+            onClick={() => handleTabClick("Profile")}/>
         </div>
         <div className='flex items-center'>
           <button
